@@ -57,7 +57,7 @@ function NavBar() {
     setErrorMsg('');
     setSuccessMsg('');
     try {
-      const response = await Api.post('http://localhost:3000/login', { nome, senha });
+      const response = await Api.post('/login', { nome, senha });
       const data = response.data;
 
       setSuccessMsg('Login realizado com sucesso!');
