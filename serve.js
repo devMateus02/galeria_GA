@@ -13,10 +13,11 @@ import { v2 as cloudinary } from 'cloudinary';
 
 
 dotenv.config();
-const PORT = process.env.PORT || 3000; // corrigido aqui
+const PORT = process.env.PORT || 3000;
 const app = express();
+app.use(express.json());
 
-const allowedOrigins = ['https://galeria-ga-m4dz.vercel.app']; // frontend da Vercel
+const allowedOrigins = ['https://galeria-ga-m4dz.vercel.app']; 
 app.use(cors({
   origin: allowedOrigins,
   credentials: true
