@@ -141,7 +141,7 @@ function NavBar() {
   transform transition-transform duration-300 ease-in-out
   ${menuAberto ? "translate-x-0" : "-translate-x-full"}
   lg:translate-x-0 lg:flex lg:flex-col lg:items-center
-  border-r-2 border-gray-700
+  border-r-1 border-[rgba(255,255,255,.1)]
 `}>
 
         <div className="text-center mt-6 flex items-center gap-4 flex-col ">

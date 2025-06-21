@@ -12,15 +12,18 @@ function App() {
   <>
  <div className="flex flex-col lg:flex-row relative ">
   <NavBar />
- 
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/foto" element={<Foto />} />
       <Route path="/info" element={<Info />} />
       <Route path="/painel" element={<PainelAdm />} />
     </Routes>
- 
 </div>
+<footer className='bg-black border-t-1 border-[rgba(255,255,255,.1)]'>
+  <p className='text-[.8em] font-medium '>
+    © Copyright 2025 . criado por <a className='underline font-semibold text-white' href="https://mateuscelestinoportifolio.vercel.app/">Mateus celestino</a>
+    </p>
+  </footer>
 </>)
 }
 
