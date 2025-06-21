@@ -37,12 +37,12 @@ function Foto() {
 
       <div className="flex flex-row flex-wrap justify-center gap-2.5">
         {fotos.map((foto, index) => (
-          <div key={index} className="lg:w-[30%] w-[40%]  h-[300px] overflow-hidden rounded shadow-md">
+          <div key={index} className="lg:w-[30%] w-[40%] overflow-hidden rounded shadow-md">
             <div className=" overflow-hidden">
               <img
               src={foto.url}
               alt={`Foto ${index + 1}`}
-              className="   object-cover hover:scale-[1.5] transition-transform duration-[.6s]"
+              className="  object-cover hover:scale-[1.5] transition-transform duration-[.6s]"
             />
             </div>
 
