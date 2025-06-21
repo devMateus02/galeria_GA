@@ -198,7 +198,7 @@ function NavBar() {
       {/* Modal de login */}
       <dialog
         ref={dialogRef}
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[25px]"
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[25px] w-[80%] lg:w-[380px] "
         onCancel={(e) => {
           e.preventDefault();
           closeDialog();
