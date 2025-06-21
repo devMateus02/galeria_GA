@@ -17,11 +17,8 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
 
-const allowedOrigins = ['https://galeria-ga-m4dz.vercel.app']; 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+
+app.use(cors());
 
 
 mongoose.connect(process.env.MONGO_URI)
