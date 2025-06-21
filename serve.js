@@ -13,12 +13,15 @@ import { v2 as cloudinary } from 'cloudinary';
 
 
 dotenv.config();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // corrigido aqui
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-app.use('/upload', uploadRoute);
+const allowedOrigins = ['https://galeria-ga-m4dz.vercel.app']; // frontend da Vercel
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Conectado ao MongoDB'))
