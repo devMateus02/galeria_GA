@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+
+
+.nav li a{
+@apply text-left block p-2 max-w-[100%] w-[100%] pl-3 transition-[background,font-weight,padding-left] duration-[.3s] hover:font-semibold hover:bg-[rgba(204,204,204,0.2)] hover:pl-[16px];
+
+}
+
+.list-sociais a{ 
+    @apply transition-[font-weight] duration-[.3s] hover:font-semibold 
+}
