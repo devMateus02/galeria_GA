@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home.jsx';
 import Foto from './pages/Foto.jsx';
 import Info from './pages/Info.jsx';
-import PainelAdm from './pages/painel.jsx';
+import PainelAdm from './pages/Painel.jsx';
 import NavBar from './components/Nav-bar.jsx';
 import './App.css'
 
