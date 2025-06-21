@@ -19,6 +19,8 @@ app.use(express.json());
 
 
 app.use(cors());
+app.use('/upload', uploadRoute);
+
 
 
 mongoose.connect(process.env.MONGO_URI)
