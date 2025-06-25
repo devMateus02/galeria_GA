@@ -82,7 +82,7 @@ app.delete('/fotos', autenticarToken, verificarAdmin, async (req, res) => {
   }
 });
 
-
+// Rota GET para o painel protegida apenas para usuario Adm
 
 app.get('/painel', autenticarToken, verificarAdmin, (req, res) => {
   res.status(200).json({ mensagem: 'Bem-vindo ao painel de administrador!' });
