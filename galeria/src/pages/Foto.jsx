@@ -37,7 +37,7 @@ function Foto() {
 
     setTimeout(() => {
       URL.revokeObjectURL(objectUrl);
-    }, 2000); 
+    }, 3000); 
   } catch (error) {
     console.error("Erro ao fazer o download:", error);
   }
