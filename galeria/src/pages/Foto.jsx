@@ -56,7 +56,25 @@ function Foto() {
     if (indiceAtual > 0) setIndiceAtual(indiceAtual - 1);
   };
 
-  // Paginação
+  const baixarImagem = async (url, nomeArquivo) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = nomeArquivo;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Erro ao baixar a imagem:", error);
+    }
+  };
+
   const indexInicial = (paginaAtual - 1) * fotosPorPagina;
   const fotosVisiveis = fotos.slice(indexInicial, indexInicial + fotosPorPagina);
   const totalPaginas = Math.ceil(fotos.length / fotosPorPagina);
@@ -98,35 +116,66 @@ function Foto() {
                     />
                   </div>
                   <div className="p-2 text-center border-t">
-                    <a
-                      href={`${foto.url}?t=${Date.now()}`}
-                      download={`foto-${realIndex + 1}.jpg`}
+                    <button
+                      onClick={() => baixarImagem(foto.url, `foto-${realIndex + 1}.jpg`)}
                       className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition inline-block text-center"
                     >
                       Download
-                    </a>
+                    </button>
                   </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Paginação */}
+          {/* Paginação resumida */}
           {totalPaginas > 1 && (
-            <div className="flex justify-center mt-6 flex-wrap gap-2">
-              {Array.from({ length: totalPaginas }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPaginaAtual(i + 1)}
-                  className={`w-9 h-9 border border-gray-300 rounded text-white ${
-                    paginaAtual === i + 1
-                      ? "bg-blue-600 font-bold"
-                      : "bg-gray-800 hover:bg-gray-700"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
+            <div className="flex justify-center mt-6 flex-wrap gap-2 items-center">
+              <button
+                onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
+                disabled={paginaAtual === 1}
+                className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded disabled:opacity-50"
+              >
+                Anterior
+              </button>
+
+              {Array.from({ length: totalPaginas }, (_, i) => i + 1)
+                .filter((num) => {
+                  if (totalPaginas <= 5) return true;
+                  if (paginaAtual <= 3) return num <= 4 || num === totalPaginas;
+                  if (paginaAtual >= totalPaginas - 2)
+                    return num >= totalPaginas - 3 || num === 1;
+                  return (
+                    num === 1 ||
+                    num === totalPaginas ||
+                    Math.abs(num - paginaAtual) <= 1
+                  );
+                })
+                .map((num, i, arr) => (
+                  <React.Fragment key={num}>
+                    {i > 0 && num - arr[i - 1] > 1 && (
+                      <span className="text-white px-2">...</span>
+                    )}
+                    <button
+                      onClick={() => setPaginaAtual(num)}
+                      className={`w-9 h-9 border border-gray-300 rounded text-white ${
+                        paginaAtual === num
+                          ? "bg-blue-600 font-bold"
+                          : "bg-gray-800 hover:bg-gray-700"
+                      }`}
+                    >
+                      {num}
+                    </button>
+                  </React.Fragment>
+                ))}
+
+              <button
+                onClick={() => setPaginaAtual((prev) => Math.min(prev + 1, totalPaginas))}
+                disabled={paginaAtual === totalPaginas}
+                className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded disabled:opacity-50"
+              >
+                Próximo
+              </button>
             </div>
           )}
 
@@ -182,13 +231,12 @@ function Foto() {
                 <p className="mb-2 text-sm text-gray-300">
                   Foto {indiceAtual + 1} de {fotos.length}
                 </p>
-                <a
-                  href={`${fotos[indiceAtual].url}?t=${Date.now()}`}
-                  download={`foto-${indiceAtual + 1}.jpg`}
+                <button
+                  onClick={() => baixarImagem(fotos[indiceAtual].url, `foto-${indiceAtual + 1}.jpg`)}
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition inline-block text-center"
                 >
                   Download
-                </a>
+                </button>
               </div>
             </>
           )}
@@ -199,3 +247,4 @@ function Foto() {
 }
 
 export default Foto;
+
