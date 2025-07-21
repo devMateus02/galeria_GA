@@ -33,10 +33,9 @@ function Foto() {
 
   const fecharModal = () => {
     setModalAberto(false);
-    setTimeout(() => setFotoAtual(null), 300); // esperar a animação
+    setTimeout(() => setFotoAtual(null), 300); // aguarda animação
   };
 
-  // Fecha modal com ESC
   useEffect(() => {
     const escFunction = (e) => {
       if (e.key === "Escape") fecharModal();
@@ -48,22 +47,24 @@ function Foto() {
   const handleDownload = async (url, nome = "imagem.jpg") => {
     if (isDownloading) return;
     setIsDownloading(true);
+
     try {
-      const response = await fetch(url);
+      const response = await fetch(`${url}?t=${Date.now()}`);
       const blob = await response.blob();
       const objectUrl = URL.createObjectURL(blob);
 
       const link = document.createElement("a");
       link.href = objectUrl;
       link.download = nome;
+      link.style.display = "none";
       document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
 
       setTimeout(() => {
+        link.click();
         URL.revokeObjectURL(objectUrl);
+        document.body.removeChild(link);
         setIsDownloading(false);
-      }, 3000);
+      }, 100); // delay ajuda no mobile
     } catch (error) {
       console.error("Erro ao fazer o download:", error);
       setIsDownloading(false);
@@ -111,8 +112,9 @@ function Foto() {
                         handleDownload(foto.url, `foto-${index + 1}.jpg`)
                       }
                       className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                      disabled={isDownloading}
                     >
-                      Download
+                      {isDownloading ? "Baixando..." : "Download"}
                     </button>
                   </div>
                 </div>
@@ -128,7 +130,7 @@ function Foto() {
         </>
       )}
 
-      {/* Modal fixo no DOM */}
+      {/* Modal fixo com animação */}
       <div
         className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 transition-opacity duration-300 ${
           modalAberto ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
