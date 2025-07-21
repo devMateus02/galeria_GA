@@ -58,20 +58,21 @@ function Foto() {
 
   const baixarImagem = async (url, nomeArquivo) => {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { mode: "cors" });
       const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
+      const blobUrl = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");
       link.href = blobUrl;
       link.download = nomeArquivo;
       document.body.appendChild(link);
       link.click();
-      link.remove();
+      document.body.removeChild(link);
 
-      URL.revokeObjectURL(blobUrl);
+      window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("Erro ao baixar a imagem:", error);
+      alert("Ocorreu um erro ao tentar baixar a imagem. Tente novamente.");
     }
   };
 
@@ -247,4 +248,5 @@ function Foto() {
 }
 
 export default Foto;
+
 
