@@ -22,20 +22,26 @@ function Foto() {
 
     fetchFotos();
   }, []);
-
   const handleDownload = async (url, nome = "imagem.jpg") => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = nome;
-      link.click();
-      URL.revokeObjectURL(link.href);
-    } catch (error) {
-      console.error("Erro ao fazer o download:", error);
-    }
-  };
+   try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = nome;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => {
+      URL.revokeObjectURL(objectUrl);
+    }, 2000); 
+  } catch (error) {
+    console.error("Erro ao fazer o download:", error);
+  }
+};
 
   return (
     <div className="p-4 bg-black w-[100vw]">
