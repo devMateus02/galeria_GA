@@ -5,6 +5,7 @@ function Foto() {
   const [fotos, setFotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     const fetchFotos = async () => {
@@ -22,27 +23,36 @@ function Foto() {
 
     fetchFotos();
   }, []);
+
   const handleDownload = async (url, nome = "imagem.jpg") => {
-   try {
+  if (isDownloading) return; // evita múltiplos cliques
+
+  setIsDownloading(true);
+  try {
     const response = await fetch(url);
     const blob = await response.blob();
     const objectUrl = URL.createObjectURL(blob);
 
+    // Cria novo link a cada vez
     const link = document.createElement("a");
+    link.style.display = "none";
     link.href = objectUrl;
     link.download = nome;
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
 
+    // Limpa após clique
     setTimeout(() => {
       URL.revokeObjectURL(objectUrl);
-    }, 3000); 
+      document.body.removeChild(link);
+      setIsDownloading(false); // libera para próximo clique
+    }, 3000);
   } catch (error) {
     console.error("Erro ao fazer o download:", error);
+    setIsDownloading(false);
   }
 };
-
+  
   return (
     <div className="p-4 bg-black w-[100vw]">
       <h2 className="text-2xl font-bold mb-6 text-center">Galeria de Fotos</h2>
