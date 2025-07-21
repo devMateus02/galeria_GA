@@ -5,7 +5,8 @@ function Foto() {
   const [fotos, setFotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [fotoAtual, setFotoAtual] = useState(null);
 
   useEffect(() => {
     const fetchFotos = async () => {
@@ -24,37 +25,36 @@ function Foto() {
     fetchFotos();
   }, []);
 
-  const handleDownload = async (url, nome = "imagem.jpg") => {
-  if (isDownloading) return; // evita múltiplos cliques
+  const abrirModal = (foto) => {
+    setFotoAtual(foto);
+    setModalAberto(true);
+  };
 
-  setIsDownloading(true);
-  try {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
+  const fecharModal = () => {
+    setModalAberto(false);
+    setFotoAtual(null);
+  };
 
-    // Cria novo link a cada vez
+  const handleDownload = (url, nome = "imagem.jpg") => {
     const link = document.createElement("a");
-    link.style.display = "none";
-    link.href = objectUrl;
-    link.download = nome;
+    link.href = url;
+    link.setAttribute("download", nome);
     document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
+  };
 
-    // Limpa após clique
-    setTimeout(() => {
-      URL.revokeObjectURL(objectUrl);
-      document.body.removeChild(link);
-      setIsDownloading(false); // libera para próximo clique
-    }, 3000);
-  } catch (error) {
-    console.error("Erro ao fazer o download:", error);
-    setIsDownloading(false);
-  }
-};
-  
+  // Fecha modal com ESC
+  useEffect(() => {
+    const escFunction = (e) => {
+      if (e.key === "Escape") fecharModal();
+    };
+    document.addEventListener("keydown", escFunction);
+    return () => document.removeEventListener("keydown", escFunction);
+  }, []);
+
   return (
-    <div className="p-4 bg-black w-[100vw]">
+    <div className="p-4 bg-black min-h-screen w-[100vw] text-white">
       <h2 className="text-2xl font-bold mb-6 text-center">Galeria de Fotos</h2>
 
       {loading ? (
@@ -62,21 +62,30 @@ function Foto() {
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
         </div>
       ) : erro ? (
-        <p className="text-center text-red-500 mt-4">Erro ao carregar fotos. Tente novamente mais tarde.</p>
+        <p className="text-center text-red-500 mt-4">
+          Erro ao carregar fotos. Tente novamente mais tarde.
+        </p>
       ) : (
         <>
           <div className="flex flex-row flex-wrap justify-center gap-2.5">
             {fotos.map((foto, index) => {
-              const imagemOtima = foto.url.replace("/upload/", "/upload/f_auto,q_auto,w_800/");
+              const imagemOtima = foto.url.replace(
+                "/upload/",
+                "/upload/f_auto,q_auto,w_800/"
+              );
 
               return (
-                <div key={index} className="lg:w-[30%] w-[40%] overflow-hidden rounded shadow-md flex flex-col  justify-center items-center">
+                <div
+                  key={index}
+                  className="lg:w-[30%] w-[40%] overflow-hidden rounded shadow-md flex flex-col justify-center items-center"
+                >
                   <div className="overflow-hidden">
                     <img
                       src={imagemOtima}
                       alt={`Foto ${index + 1}`}
                       loading="lazy"
-                      className="object-cover hover:scale-[1.3] h-[330px] w-[300px] transition-transform duration-[.6s]"
+                      onClick={() => abrirModal(foto)}
+                      className="cursor-pointer object-cover hover:scale-[1.3] h-[330px] w-[300px] transition-transform duration-[.6s]"
                     />
                   </div>
                   <div className="p-2 text-center border-t">
@@ -93,12 +102,42 @@ function Foto() {
           </div>
 
           {fotos.length === 0 && (
-            <p className="text-center text-gray-500 mt-4">Nenhuma foto enviada ainda.</p>
+            <p className="text-center text-gray-500 mt-4">
+              Nenhuma foto enviada ainda.
+            </p>
           )}
         </>
+      )}
+
+      {/* Modal */}
+      {modalAberto && fotoAtual && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center">
+          <div className="relative max-w-[90vw] max-h-[90vh] p-4 flex flex-col items-center">
+            <button
+              onClick={fecharModal}
+              className="absolute top-4 right-4 text-white text-3xl hover:text-red-400"
+            >
+              &times;
+            </button>
+
+            <img
+              src={fotoAtual.url}
+              alt="Imagem ampliada"
+              className="max-h-[80vh] max-w-[90vw] object-contain mb-4"
+            />
+
+            <button
+              onClick={() => handleDownload(fotoAtual.url, "foto.jpg")}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            >
+              Download
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
 }
 
 export default Foto;
+
